@@ -1,0 +1,32 @@
+---
+- name: Create autostart directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/autostart"
+    state: directory
+    mode: '0777'
+  become: true
+  become_method: sudo
+
+- name: Set executable permissions for run-ansible.sh
+  file:
+    path: "{{ role_path }}/files/update_qterminal.sh"
+    mode: '0755'
+    state: file
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Create autostart entry for update_qterminal.sh
+  copy:
+    dest: "{{ ansible_env.HOME }}/.config/autostart/update_qterminal.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Exec=/bin/bash {{ role_path }}/files/update_qterminal.sh
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name[en_US]=Update QTerminal Settings
+      Name=Update QTerminal Settings
+      Comment[en_US]=Update QTerminal settings at login
+      Comment=Update QTerminal settings at login

@@ -1,0 +1,6 @@
+---
+go_tools:
+   - github.com/lc/gau/v2/cmd/gau
+   - github.com/jaeles-project/gospider
+   - github.com/projectdiscovery/subfinder/v2/cmd/subfinder
+   - github.com/tomnomnom/waybackurls

@@ -1,0 +1,13 @@
+---      
+- name: Uncomment dbms.security.auth_enabled in neo4j.conf
+  lineinfile:
+    path: /usr/share/neo4j/conf/neo4j.conf
+    regexp: '^#dbms.security.auth_enabled=false'
+    line: 'dbms.security.auth_enabled=false'
+  become: true
+  become_method: sudo
+        
+- name: Restart Neo4j server
+  command: neo4j restart
+  become: true
+  become_method: sudo

@@ -1,0 +1,9 @@
+- name: "Updating Firefox Policies"
+  template: 
+    src: "templates/policies.json.j2"
+    dest: "/usr/share/firefox-esr/distribution/policies.json"
+  become: true
+  become_method: sudo
+
+- name: Preparing FoxyProxy Extension
+  command: python3 "{{ role_path }}/files/foxyproxy/import_config.py"

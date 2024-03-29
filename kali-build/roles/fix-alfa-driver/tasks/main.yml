@@ -1,0 +1,110 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Set executable permissions for run-ansible.sh
+  file:
+    path: "{{ role_path }}/files/run-ansible.sh"
+    mode: '0755'
+    state: file
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Create autostart entry for run-ansible.sh
+  copy:
+    dest: "{{ ansible_env.HOME }}/.config/autostart/run-ansible.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Exec=qterminal --workdir {{ role_path }}/files --e "/bin/sh -c '{{ role_path }}/files/run-ansible.sh; exec bash'"
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name[en_US]=Run Ansible at Login
+      Name=Run Ansible at Login
+      Comment[en_US]=Run Ansible playbook at login
+      Comment=Run Ansible playbook at login
+  tags: skip_role
+
+- name: Copy the script to install Linux header
+  copy:
+    src: "{{ role_path }}/files/install-header.sh"
+    dest: /tmp/install-header.sh
+    mode: '0755'
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Execute the script to install Linux headers
+  command: /tmp/install-header.sh
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Create flag file to trigger playbook on reboot
+  file:
+    path: "{{ role_path }}/files/start_playbook.flag"
+    state: touch
+  tags: skip_role
+
+- name: Reboot the system
+  local_action: command reboot
+  become: true
+  become_method: sudo
+  tags: skip_role
+
+- name: Remove flag file after reboot
+  file:
+    path: "{{ role_path }}/files/start_playbook.flag"
+    state: absent
+  tags: skip_role2
+
+- name: Clone the rtl8812au driver repository
+  git:
+    repo: https://github.com/aircrack-ng/rtl8812au.git
+    dest: /tmp/rtl8812au
+  tags: skip_role2
+
+- name: Change directory to rtl8812au and install the driver
+  shell: make && make install
+  args:
+    chdir: /tmp/rtl8812au
+  become: true
+  become_method: sudo
+  tags: skip_role2
+
+- name: Reboot the system again
+  local_action: command reboot
+  become: true
+  become_method: sudo
+  tags: skip_role2
+
+- name: Comment out autologin-user in QTerminal for kali
+  lineinfile:
+    path: "/etc/lightdm/lightdm.conf"
+    regexp: '^(autologin-user=)'
+    line: '# \1'
+  become: true
+  become_method: sudo
+
+- name: Comment out autologin-user-timeout in QTerminal for kali
+  lineinfile:
+    path: "/etc/lightdm/lightdm.conf"
+    regexp: '^(autologin-user-timeout=)'
+    line: '# \1'
+  become: true
+  become_method: sudo
+
+- name: Delete autostart directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/autostart"
+    state: absent
+  become: true
+  become_method: sudo
+
+

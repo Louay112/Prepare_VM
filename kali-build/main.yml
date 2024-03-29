@@ -1,0 +1,24 @@
+---
+- name: "Preparing Kali"
+  hosts: my_servers
+  roles:
+    - role: "roles/install-tools"
+      tags: skip_role
+    - role: "roles/customize-terminal"
+      tags: skip_role
+    - role: "roles/customize-browser"
+      tags: skip_role
+    - role: "roles/fix-alfa-driver"
+    - role: gantsign.visual-studio-code
+      users:
+        - username: "{{ ansible_user_id }}" 
+          visual_studio_code_extensions:
+            - streetsidesoftware.code-spell-checker
+            - ms-python.python
+            - DEVSENSE.phptools-vscode
+            - GitHub.copilot
+            - snyk-security.snyk-vulnerability-scanner
+            - silofy.hackthebox
+          workbench.colorTheme: "HackTheBox"
+    - role: "roles/remove-project"
+

@@ -1,0 +1,14 @@
+---
+- name: Copy the script to tmp
+  copy:
+    src: "{{ role_path }}/files/remove.sh"
+    dest: /tmp/remove.sh
+    mode: '0755'
+  become: true
+  become_method: sudo
+
+- name: Execute script from /tmp
+  shell:
+    cmd: bash /tmp/remove.sh
+  become: true
+  become_method: sudo

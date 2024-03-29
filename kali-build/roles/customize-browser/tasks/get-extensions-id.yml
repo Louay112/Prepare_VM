@@ -1,0 +1,51 @@
+---
+- name: Initialize extension IDs variable
+  ansible.builtin.set_fact:
+    extension_ids: {}
+
+- name: Create temporary directory for extensions
+  ansible.builtin.file:
+    path: "{{ extensions_dir }}"
+    state: directory
+
+- name: Download extensions
+  ansible.builtin.get_url:
+    url: "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
+    dest: "{{ extensions_dir }}/{{ item }}.xpi"
+  loop: "{{ FirefoxPlugins }}"
+
+- name: Create individual directories for extensions
+  ansible.builtin.file:
+    path: "{{ extensions_dir }}/{{ item }}"
+    state: directory
+  loop: "{{ FirefoxPlugins }}"
+
+- name: Extract manifest.json from extension
+  ansible.builtin.command:
+    cmd: "unzip -o -j {{ extensions_dir }}/{{ item }}.xpi manifest.json -d {{ extensions_dir }}/{{ item }}"
+  loop: "{{ FirefoxPlugins }}"
+  register: unzip_result
+  changed_when: "unzip_result.rc == 0"
+
+- name: Read extension ID from manifest.json
+  ansible.builtin.command:
+    cmd: "jq -r .browser_specific_settings.gecko.id {{ extensions_dir }}/{{ item }}/manifest.json"
+  register: result
+  loop: "{{ FirefoxPlugins }}"
+  changed_when: false
+
+- name: Set extension IDs variable
+  ansible.builtin.set_fact:
+    extension_ids: "{{ extension_ids | combine({item.item: item.stdout}) }}"
+  loop: "{{ result.results }}"
+
+- name: Save extension IDs to a file
+  ansible.builtin.copy:
+    content: "{{ extension_ids | to_nice_yaml }}"
+    dest: "{{ role_path }}/vars/extension_ids.yml"
+  run_once: true
+
+- name: Clean up temporary directory
+  ansible.builtin.file:
+    path: "{{ extensions_dir }}"
+    state: absent

@@ -1,0 +1,14 @@
+---
+- name: "Installing GO Tools"
+  become: true
+  become_method: sudo
+  command:
+    cmd: "/usr/bin/go install {{ item }}@latest"
+    creates: "/usr/local/bin/{{ item | regex_replace('.*/', '') }}"
+  with_items: "{{ go_tools }}"
+  environment:
+    GOPATH: "/usr/local/go"
+    GOBIN: "/usr/local/bin"
+  
+
+

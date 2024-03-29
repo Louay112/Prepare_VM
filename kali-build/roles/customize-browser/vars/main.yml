@@ -1,0 +1,10 @@
+---
+foxyproxy_dir: "{{ role_path }}/files/foxyproxy"
+extensions_dir: "/tmp/firefox_extensions"
+FirefoxPlugins:
+  - "darkreader"
+  - "foxyproxy-standard"
+  - "wappalyzer"
+include_vars:
+  file: "{{ role_path }}/vars/extension_ids.yml"
+

@@ -1,0 +1,5 @@
+---
+- include: "get-extensions-id.yml"
+- include: "firefox.yml"
+- include: "burp.yml"
+

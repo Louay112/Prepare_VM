@@ -1,0 +1,7 @@
+---
+- include: apt-stuff.yml
+- include: bloodhound.yml
+- include: github-repos.yml
+- include: go-tools.yml
+- include: pip-stuff.yml
+- include: python-tools.yml

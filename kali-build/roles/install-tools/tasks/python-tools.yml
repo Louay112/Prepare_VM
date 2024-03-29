@@ -1,0 +1,14 @@
+---
+- name: "Adding pipx binaries to PATH environment variable"
+  command:
+   cmd: "pipx ensurepath"
+
+- name: "Install pipx tools"
+  community.general.pipx:
+    name: "{{ item.name }}"
+    source: "{{ item.url }}"
+    state: latest
+    force: yes
+  loop:
+    - { name: 'netexec', url: 'git+https://github.com/Pennyw0rth/NetExec.git' }
+    - { name: 'certipy-ad', url: 'git+https://github.com/ly4k/Certipy.git' }

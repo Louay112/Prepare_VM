@@ -1,0 +1,45 @@
+{
+  "mode": "disabled",
+  "sync": false,
+  "autoBackup": false,
+  "passthrough": "",
+  "theme": "",
+  "container": {
+    "incognito": "",
+    "container-1": "",
+    "container-2": "",
+    "container-3": "",
+    "container-4": ""
+  },
+  "commands": {
+    "setProxy": "",
+    "setTabProxy": "",
+    "quickAdd": ""
+  },
+  "data": [
+    {
+      "active": true,
+      "title": "Burp",
+      "type": "http",
+      "hostname": "127.0.0.1",
+      "port": "8080",
+      "username": "",
+      "password": "",
+      "cc": "",
+      "city": "",
+      "color": "#66cc66",
+      "pac": "",
+      "pacString": "",
+      "proxyDNS": true,
+      "include": [
+        {
+          "type": "wildcard",
+          "title": "all URLs",
+          "pattern": "*://*/",
+          "active": true
+        }
+      ],
+      "exclude": []
+    }
+  ]
+}
